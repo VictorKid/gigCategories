@@ -17,7 +17,7 @@ class GigCategoriesCVC: UIViewController {
     var delegate: GigCategoriesCVCDelegate?
     var maxWidth: CGFloat = 0.0
     lazy var gigCategoriesCView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = CenterCellCollectionViewFlowLayout()
         layout.scrollDirection = .Horizontal
         var aCollectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
         aCollectionView.dataSource = self
@@ -42,6 +42,15 @@ class GigCategoriesCVC: UIViewController {
         notificationCenter.addObserver(self, selector: "didReceiveIndexPathOfSubCategory:", name: DID_SELECT_SUBCATEGORY_ATINDEXPATH, object: nil)
         
         
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        var insets = gigCategoriesCView.contentInset
+        let value = (maxWidth - (maxWidth / 2)) / 2
+        insets.left = value
+        insets.right = value
+        gigCategoriesCView.contentInset = insets
     }
     
     // MARK: Notification Handler Method
@@ -101,11 +110,11 @@ extension GigCategoriesCVC: UICollectionViewDelegate {
 
 extension GigCategoriesCVC: UICollectionViewDelegateFlowLayout {
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return CGSize(width: maxWidth/3, height: 70)
+        return CGSize(width: maxWidth / 2, height: 70)
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
-        return 0
+        return 1.0
     }
 }
 
@@ -116,7 +125,6 @@ extension GigCategoriesCVC: UIScrollViewDelegate {
         let centeredIndexPath = gigCategoriesCView.indexPathForItemAtPoint(CGPoint(x: CGRectGetMidX(gigCategoriesCView.bounds), y: CGRectGetMidY(gigCategoriesCView.bounds)))
         if let selectedIndexPath = centeredIndexPath,
             delegate = delegate {
-                gigCategoriesCView.scrollToItemAtIndexPath(selectedIndexPath, atScrollPosition: .CenteredHorizontally, animated: true)
                 delegate.gigCategoriesCVCDidSelectIndexPath(selectedIndexPath)
         }
     }

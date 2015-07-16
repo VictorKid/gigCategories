@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		960A348C1B2D792C0096268C /* CenterCellCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960A348B1B2D792C0096268C /* CenterCellCollectionViewFlowLayout.swift */; };
 		9660093A1B16322300A2911D /* GigDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966009391B16322300A2911D /* GigDetailsVC.swift */; };
 		9685D8921B0E003800E468B6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9685D8911B0E003800E468B6 /* AppDelegate.swift */; };
 		9685D8941B0E003800E468B6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9685D8931B0E003800E468B6 /* ViewController.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		960A348B1B2D792C0096268C /* CenterCellCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CenterCellCollectionViewFlowLayout.swift; path = ../CenterCellCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		966009391B16322300A2911D /* GigDetailsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GigDetailsVC.swift; sourceTree = "<group>"; };
 		9685D88C1B0E003800E468B6 /* gigCategories.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gigCategories.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9685D8901B0E003800E468B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -100,6 +102,7 @@
 				9685D8C51B102F9100E468B6 /* CategoryItem.swift */,
 				9685D8B31B0E013A00E468B6 /* GigCategoriesCVC.swift */,
 				9685D8B71B0E1EFD00E468B6 /* GigCategoryCVCell.swift */,
+				960A348B1B2D792C0096268C /* CenterCellCollectionViewFlowLayout.swift */,
 				9685D8951B0E003800E468B6 /* Main.storyboard */,
 				9685D89A1B0E003800E468B6 /* LaunchScreen.xib */,
 				9685D8981B0E003800E468B6 /* Images.xcassets */,
@@ -236,6 +239,7 @@
 				9685D8B81B0E1EFD00E468B6 /* GigCategoryCVCell.swift in Sources */,
 				9685D8941B0E003800E468B6 /* ViewController.swift in Sources */,
 				9685D8CA1B1041E900E468B6 /* GigSubCategorViewCVCell.swift in Sources */,
+				960A348C1B2D792C0096268C /* CenterCellCollectionViewFlowLayout.swift in Sources */,
 				9685D8C81B103CD900E468B6 /* GigMainCategoriesVC.swift in Sources */,
 				9685D8B41B0E013A00E468B6 /* GigCategoriesCVC.swift in Sources */,
 				9660093A1B16322300A2911D /* GigDetailsVC.swift in Sources */,
@@ -373,6 +377,7 @@
 				INFOPLIST_FILE = gigCategories/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_WHOLE_MODULE_OPTIMIZATION = YES;
 			};
 			name = Debug;
 		};
@@ -383,6 +388,7 @@
 				INFOPLIST_FILE = gigCategories/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_WHOLE_MODULE_OPTIMIZATION = YES;
 			};
 			name = Release;
 		};

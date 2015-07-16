@@ -18,6 +18,7 @@ protocol GigMainCategoriesViewDataSource {
 @objc
 protocol GigMainCategoriesViewDelegate {
     optional func categoryView(categoryView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    optional func categoryView(categoryView: UITableView, titleForHeaderInSection section: Int) -> String
 }
 
 class GigMainCategoriesVC: UIViewController {
@@ -121,7 +122,20 @@ extension GigMainCategoriesVC: UICollectionViewDelegateFlowLayout {
     }
 }
 
-// MARK: UITableViewDataSource
+// MARK: UIScrollViewDelegate
+
+extension GigMainCategoriesVC: UIScrollViewDelegate {
+    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+        let centeredIndexPath = categoriesContainerView.indexPathForItemAtPoint(CGPoint(x: CGRectGetMidX(categoriesContainerView.bounds), y: CGRectGetMidY(categoriesContainerView.bounds)))
+        if let selectedIndexPath = centeredIndexPath {
+            // Notify GigCategoriesCVC which category is viewing now
+            notificationCenter.postNotificationName(DID_SELECT_SUBCATEGORY_ATINDEXPATH, object: nil, userInfo: ["indexPath": selectedIndexPath])
+        }
+        
+    }
+}
+
+// MARK: GigMainCategoriesViewDataSource
 
 extension GigMainCategoriesVC: UITableViewDataSource {
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -148,26 +162,18 @@ extension GigMainCategoriesVC: UITableViewDataSource {
             return cell
         }
     }
+    
 }
 
-// MARK: UITableViewDelegate
+// MARK: GigMainCategoriesViewDelegate
 
 extension GigMainCategoriesVC: UITableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         delegate?.categoryView?(tableView, didSelectRowAtIndexPath: indexPath)
     }
-}
-
-// MARK: UIScrollViewDelegate
-
-extension GigMainCategoriesVC: UIScrollViewDelegate {
-    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
-        let centeredIndexPath = categoriesContainerView.indexPathForItemAtPoint(CGPoint(x: CGRectGetMidX(categoriesContainerView.bounds), y: CGRectGetMidY(categoriesContainerView.bounds)))
-        if let selectedIndexPath = centeredIndexPath {
-            // Notify GigCategoriesCVC which category is viewing now
-            notificationCenter.postNotificationName(DID_SELECT_SUBCATEGORY_ATINDEXPATH, object: nil, userInfo: ["indexPath": selectedIndexPath])
-        }
-        
+    
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return delegate?.categoryView?(tableView, titleForHeaderInSection: section)
     }
 }
 

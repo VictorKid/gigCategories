@@ -65,7 +65,7 @@ extension ViewController: GigMainCategoriesViewDataSource {
     }
     
     func numberOfSectionsInCategoryView(categoryView: UITableView) -> Int {
-        return 1
+        return 2
     }
     
     func categoryView(categoryView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -73,20 +73,19 @@ extension ViewController: GigMainCategoriesViewDataSource {
     }
     
     func categoryView(categoryView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell = categoryView.dequeueReusableCellWithIdentifier(CATEGORY_DATA_IDNT, forIndexPath: indexPath) as? UITableViewCell
+        var cell = categoryView.dequeueReusableCellWithIdentifier(CATEGORY_DATA_IDNT, forIndexPath: indexPath) as! UITableViewCell
         
-        if cell == nil {
-            cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: CATEGORY_DATA_IDNT)
-        }
-    
+        let subviews = cell.contentView.subviews as! [UIView]
+        subviews.map{ $0.removeFromSuperview() }
+        
         let cellData = categoryData[categoryView.tag]
         let aLable = UILabel()
         aLable.text = cellData[indexPath.row] as String
         aLable.sizeToFit()
-        aLable.center = CGPoint(x: CGRectGetMidX(cell!.contentView.frame), y: CGRectGetMidY(cell!.contentView.frame))
-        cell!.contentView.addSubview(aLable)
+        aLable.center = CGPoint(x: CGRectGetMidX(cell.contentView.frame), y: CGRectGetMidY(cell.contentView.frame))
+        cell.contentView.addSubview(aLable)
         
-        return cell!
+        return cell
     }
 }
 
@@ -94,6 +93,14 @@ extension ViewController: GigMainCategoriesViewDelegate {
     func categoryView(categoryView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         categoryView.deselectRowAtIndexPath(indexPath, animated: true)
         self.performSegueWithIdentifier("showGigDetails", sender: self)
+    }
+    
+    func categoryView(categoryView: UITableView, titleForHeaderInSection section: Int) -> String {
+        if section == 0 {
+            return "精選表演"
+        } else {
+            return "所有表演"
+        }
     }
 }
 
