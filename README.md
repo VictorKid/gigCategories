@@ -74,4 +74,5 @@ extension ViewController: GigMainCategoriesViewDelegate {
 ```
 
 # Todos
+- More detailed docs
 - Publish to cocoadpods
