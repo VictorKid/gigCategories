@@ -1,6 +1,8 @@
 # CategoryView
 Reusable CategoryView in swift. It will take less than 5 min to integrate it with your app.
 
+![demo01](https://raw.githubusercontent.com/VictorKid/gigCategories/master/GigCategoires-Demo.gif)
+
 # Usage
 ```swift
 class ViewController: UIViewController {
