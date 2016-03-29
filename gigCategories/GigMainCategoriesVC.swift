@@ -11,14 +11,16 @@ import UIKit
 let DID_SELECT_SUBCATEGORY_ATINDEXPATH = "Did_Select_SubCategory_AtIndexPath"
 protocol GigMainCategoriesViewDataSource {
     func numberOfCategoryViews() -> Int
-    func numberOfSectionsInCategoryView(categoryView: UITableView) -> Int
-    func categoryView(categoryView: UITableView, numberOfRowsInSection section: Int) -> Int
-    func categoryView(categoryView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    func renderCategoryCotent(contentForRowAtIndexPath indexPath: NSIndexPath) -> UIView
 }
 @objc
 protocol GigMainCategoriesViewDelegate {
     optional func categoryView(categoryView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     optional func categoryView(categoryView: UITableView, titleForHeaderInSection section: Int) -> String
+    func categoryView(categoryView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
+}
+protocol GigMainCategoriesViewScrollDelegate {
+    func didScrollToAnotherCategory(indexPath: NSIndexPath)
 }
 
 class GigMainCategoriesVC: UIViewController {
@@ -28,7 +30,9 @@ class GigMainCategoriesVC: UIViewController {
     
     var dataSource: GigMainCategoriesViewDataSource?
     var delegate: GigMainCategoriesViewDelegate?
+    var scrollDelegate : GigMainCategoriesViewScrollDelegate?
     var categoryItems: [CategoryItem]!
+    var isCenter = true;
     var categoriesBar: GigCategoriesBar!
     
     lazy var categoriesContainerView: UICollectionView = {
@@ -51,18 +55,18 @@ class GigMainCategoriesVC: UIViewController {
         maxWidth = UIScreen.mainScreen().bounds.size.width
         maxHeight = UIScreen.mainScreen().bounds.size.height
         let navBar = UINavigationBar(frame: CGRect(x: 0, y: 20, width: maxWidth, height: 70))
-        categoriesBar = GigCategoriesBar(sourceView: navBar, categoryItems: categoryItems)
+        navBar.backgroundColor = UIColor.whiteColor()
+        categoriesBar = GigCategoriesBar(sourceView: navBar, categoryItems: categoryItems, center: isCenter, mainCategoriesVC: self)
         categoriesBar.delegate = self
         
         categoriesContainerView.frame = CGRect(x: 0, y: navBar.frame.origin.y + navBar.frame.size.height, width: maxWidth, height: maxHeight)
-        categoriesContainerView.registerClass(GigSubCategorViewCVCell.self, forCellWithReuseIdentifier: CATEGORY_VIEW_IDNT)
+        categoriesContainerView.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: CATEGORY_VIEW_IDNT)
         categoriesContainerView.backgroundColor = UIColor.clearColor()
         categoriesContainerView.reloadData()
         view.addSubview(categoriesContainerView)
         view.addSubview(navBar)
         
     }
-
 }
 
 // MARK: GigCategoriesBarDelegate
@@ -90,15 +94,19 @@ extension GigMainCategoriesVC: UICollectionViewDataSource {
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        var cell = collectionView.dequeueReusableCellWithReuseIdentifier(CATEGORY_VIEW_IDNT, forIndexPath: indexPath) as? GigSubCategorViewCVCell
+        //var cell = collectionView.dequeueReusableCellWithReuseIdentifier(CATEGORY_VIEW_IDNT, forIndexPath: indexPath) as? GigSubCategorViewCVCell
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(CATEGORY_VIEW_IDNT, forIndexPath: indexPath)
         
-        if cell == nil {
-            cell = GigSubCategorViewCVCell(frame: CGRectZero) // cell's frame size will be set by 'sizeForItemAtIndexPath' delegate method.
+        //if cell == nil {
+        //    cell = GigSubCategorViewCVCell(frame: CGRectZero) // cell's frame size will be set by 'sizeForItemAtIndexPath' delegate method.
+        //}
+        
+        //cell!.setCategoryViewDataSourceDelegate(self, index: indexPath.row)
+        if let dataSource = dataSource {
+            let content = dataSource.renderCategoryCotent(contentForRowAtIndexPath: indexPath)
+            cell.contentView.addSubview(content)
         }
-        
-        cell!.setCategoryViewDataSourceDelegate(self, index: indexPath.row)
-        
-        return cell!
+        return cell
     }
 }
 
@@ -127,81 +135,9 @@ extension GigMainCategoriesVC: UICollectionViewDelegateFlowLayout {
 extension GigMainCategoriesVC: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         let centeredIndexPath = categoriesContainerView.indexPathForItemAtPoint(CGPoint(x: CGRectGetMidX(categoriesContainerView.bounds), y: CGRectGetMidY(categoriesContainerView.bounds)))
-        if let selectedIndexPath = centeredIndexPath {
-            // Notify GigCategoriesCVC which category is viewing now
-            notificationCenter.postNotificationName(DID_SELECT_SUBCATEGORY_ATINDEXPATH, object: nil, userInfo: ["indexPath": selectedIndexPath])
+        if let selectedIndexPath = centeredIndexPath,
+            scrollDelegate = scrollDelegate {
+                scrollDelegate.didScrollToAnotherCategory(selectedIndexPath)
         }
-        
     }
 }
-
-// MARK: GigMainCategoriesViewDataSource
-
-extension GigMainCategoriesVC: UITableViewDataSource {
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        if let dataSource = dataSource {
-            return dataSource.numberOfSectionsInCategoryView(tableView)
-        } else {
-            return 1
-        }
-    }
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let dataSource = dataSource {
-            return dataSource.categoryView(tableView, numberOfRowsInSection: section)
-        } else {
-            return 0
-        }
-    }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if let dataSource = dataSource {
-            return dataSource.categoryView(tableView, cellForRowAtIndexPath: indexPath)
-        } else {
-            let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: CATEGORY_DATA_IDNT)
-            return cell
-        }
-    }
-    
-}
-
-// MARK: GigMainCategoriesViewDelegate
-
-extension GigMainCategoriesVC: UITableViewDelegate {
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        delegate?.categoryView?(tableView, didSelectRowAtIndexPath: indexPath)
-    }
-    
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return delegate?.categoryView?(tableView, titleForHeaderInSection: section)
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

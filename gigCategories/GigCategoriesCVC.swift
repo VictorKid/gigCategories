@@ -28,6 +28,7 @@ class GigCategoriesCVC: UIViewController {
     }()
     let CATEGORY_ITEM_IDNT = "Category_Item_Cell"
     var categoryItems = [CategoryItem]()
+    var isCenter: Bool!
     
     let notificationCenter = NSNotificationCenter.defaultCenter()
     
@@ -38,28 +39,22 @@ class GigCategoriesCVC: UIViewController {
         gigCategoriesCView.registerClass(GigCategoryCVCell.self, forCellWithReuseIdentifier: CATEGORY_ITEM_IDNT)
         gigCategoriesCView.backgroundColor = UIColor.clearColor()
         view.addSubview(gigCategoriesCView)
-        
-        notificationCenter.addObserver(self, selector: "didReceiveIndexPathOfSubCategory:", name: DID_SELECT_SUBCATEGORY_ATINDEXPATH, object: nil)
-        
-        
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        var insets = gigCategoriesCView.contentInset
-        let value = (maxWidth - (maxWidth / 2)) / 2
-        insets.left = value
-        insets.right = value
-        gigCategoriesCView.contentInset = insets
+        if isCenter == true {
+            var insets = gigCategoriesCView.contentInset
+            let value = (maxWidth - (maxWidth / 2)) / 2
+            insets.left = value
+            insets.right = value
+            gigCategoriesCView.contentInset = insets
+        }
     }
     
-    // MARK: Notification Handler Method
-    
-    func didReceiveIndexPathOfSubCategory(notification: NSNotification) {
-        if let userInfo = notification.userInfo,
-            indexPath = userInfo["indexPath"] as? NSIndexPath {
-                gigCategoriesCView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .CenteredHorizontally, animated: true)
-        }
+    // MARK: Fn For Handling Category Change
+    func onCategoryChange(indexPath: NSIndexPath) {
+        gigCategoriesCView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .CenteredHorizontally, animated: true)
     }
     
 }
@@ -97,7 +92,6 @@ extension GigCategoriesCVC: UICollectionViewDataSource {
 
 extension GigCategoriesCVC: UICollectionViewDelegate {
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        println("didSelectItemAtIndexPath: \(indexPath.row)")
         collectionView.deselectItemAtIndexPath(indexPath, animated: true)
         if let delegate = delegate {
             collectionView.scrollToItemAtIndexPath(indexPath, atScrollPosition: .CenteredHorizontally, animated: true)
@@ -110,11 +104,15 @@ extension GigCategoriesCVC: UICollectionViewDelegate {
 
 extension GigCategoriesCVC: UICollectionViewDelegateFlowLayout {
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return CGSize(width: maxWidth / 2, height: 70)
+        if isCenter == true {
+            return CGSize(width: maxWidth / 2, height: 70)
+        } else {
+            return CGSize(width: maxWidth / 4, height: 70)
+        }
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
-        return 1.0
+        return 0.0
     }
 }
 
@@ -129,27 +127,3 @@ extension GigCategoriesCVC: UIScrollViewDelegate {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

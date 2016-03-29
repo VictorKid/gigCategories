@@ -1,13 +1,8 @@
-//
-//  ViewController.swift
-//  gigCategories
-//
-//  Created by VictorKid on 2015/5/21.
-//  Copyright (c) 2015年 VictorKid. All rights reserved.
-//
+# CategoryView
+Reusable CategoryView in swift. It will take less than 5 min to integrate it with your app.
 
-import UIKit
-
+# Usage
+```swift
 class ViewController: UIViewController {
     
     var gigMainCategoriesVC = GigMainCategoriesVC()
@@ -45,7 +40,10 @@ class ViewController: UIViewController {
     }
     
 }
+```
 
+```swift
+// MARK: - Implemention of Delegate and DataSource method
 extension ViewController: GigMainCategoriesViewDataSource {
     func numberOfCategoryViews() -> Int {
         return categoryItems.count
@@ -73,4 +71,7 @@ extension ViewController: GigMainCategoriesViewDelegate {
         return 250.0
     }
 }
+```
 
+# Todos
+- Publish to cocoadpods

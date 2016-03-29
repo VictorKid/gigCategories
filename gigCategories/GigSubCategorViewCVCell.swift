@@ -14,7 +14,7 @@ class GigSubCategorViewCVCell: UICollectionViewCell {
     
     var aCategoryView: UITableView!
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
