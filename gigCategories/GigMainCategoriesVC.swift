@@ -8,7 +8,6 @@
 
 import UIKit
 
-let DID_SELECT_SUBCATEGORY_ATINDEXPATH = "Did_Select_SubCategory_AtIndexPath"
 protocol GigMainCategoriesViewDataSource {
     func numberOfCategoryViews() -> Int
     func renderCategoryCotent(contentForRowAtIndexPath indexPath: NSIndexPath) -> UIView
@@ -51,7 +50,7 @@ class GigMainCategoriesVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         maxWidth = UIScreen.mainScreen().bounds.size.width
         maxHeight = UIScreen.mainScreen().bounds.size.height
         let navBar = UINavigationBar(frame: CGRect(x: 0, y: 20, width: maxWidth, height: 70))
@@ -60,12 +59,16 @@ class GigMainCategoriesVC: UIViewController {
         categoriesBar.delegate = self
         
         categoriesContainerView.frame = CGRect(x: 0, y: navBar.frame.origin.y + navBar.frame.size.height, width: maxWidth, height: maxHeight)
-        categoriesContainerView.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: CATEGORY_VIEW_IDNT)
+        categoriesContainerView.registerClass(GigMainCategoriesContentCell.self, forCellWithReuseIdentifier: CATEGORY_VIEW_IDNT)
         categoriesContainerView.backgroundColor = UIColor.clearColor()
         categoriesContainerView.reloadData()
         view.addSubview(categoriesContainerView)
         view.addSubview(navBar)
         
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
     }
 }
 
@@ -94,18 +97,13 @@ extension GigMainCategoriesVC: UICollectionViewDataSource {
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        //var cell = collectionView.dequeueReusableCellWithReuseIdentifier(CATEGORY_VIEW_IDNT, forIndexPath: indexPath) as? GigSubCategorViewCVCell
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(CATEGORY_VIEW_IDNT, forIndexPath: indexPath)
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(CATEGORY_VIEW_IDNT, forIndexPath: indexPath) as! GigMainCategoriesContentCell
         
-        //if cell == nil {
-        //    cell = GigSubCategorViewCVCell(frame: CGRectZero) // cell's frame size will be set by 'sizeForItemAtIndexPath' delegate method.
-        //}
-        
-        //cell!.setCategoryViewDataSourceDelegate(self, index: indexPath.row)
         if let dataSource = dataSource {
             let content = dataSource.renderCategoryCotent(contentForRowAtIndexPath: indexPath)
-            cell.contentView.addSubview(content)
+            cell.setCategoryConttent(content)
         }
+        
         return cell
     }
 }

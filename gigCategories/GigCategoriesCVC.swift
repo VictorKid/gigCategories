@@ -71,19 +71,15 @@ extension GigCategoriesCVC: UICollectionViewDataSource {
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        var cell = collectionView.dequeueReusableCellWithReuseIdentifier(CATEGORY_ITEM_IDNT, forIndexPath: indexPath) as? GigCategoryCVCell
-        
-        if cell == nil {
-            cell = GigCategoryCVCell(frame: CGRectZero) // cell's frame size will be set by 'sizeForItemAtIndexPath' delegate method.
-        }
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(CATEGORY_ITEM_IDNT, forIndexPath: indexPath) as! GigCategoryCVCell
     
         let item = categoryItems[indexPath.row]
-        cell!.label.text = item.title
-        cell!.label.sizeToFit()
-        cell!.icon.image = item.icon
-//        cell!.contentView.backgroundColor = UIColor.greenColor()
+        cell.label.text = item.title
+        cell.label.sizeToFit()
+        cell.icon.image = item.icon
+        //cell.contentView.backgroundColor = UIColor.greenColor()
         
-        return cell!
+        return cell
     }
     
 }
